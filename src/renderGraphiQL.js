@@ -43,8 +43,45 @@ add "&raw" to the end of the URL within a browser.
   <script src="//cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
   <script src="//cdn.jsdelivr.net/react/0.13.3/react.min.js"></script>
   <script src="//cdn.jsdelivr.net/graphiql/${GRAPHIQL_VERSION}/graphiql.min.js"></script>
+  <style>
+    .box {
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+    }
+
+    .box .row {
+      border: 1px dotted grey;
+      flex: 0 1 30px;
+    }
+
+    .box .row.header {
+      font-family: Sans-Serif;
+      flex: 0 1 auto;
+      width: 100%;
+    }
+
+    .box .row.content {
+      flex: 1 1 auto;
+      height: 95%;
+    }
+
+    .box .row.footer {
+      flex: 0 1 40px;
+    }
+  </style>
 </head>
 <body>
+
+  <div class="box">
+    <div class="row header">
+      <label for='auth'>Authorization Header:</label>
+      <input type='text' id='auth' accesskey="a"/>
+    </div>
+    <div class="row content" id="main" />
+    <div class="row footer" />
+  </div>
+
   <script>
     // Collect the URL parameters
     var parameters = {};
@@ -83,7 +120,10 @@ add "&raw" to the end of the URL within a browser.
     function graphQLFetcher(graphQLParams) {
       return fetch(fetchURL, {
         method: 'post',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': document.getElementById('auth').value
+        },
         body: JSON.stringify(graphQLParams),
       }).then(function (response) {
         return response.json()
@@ -116,7 +156,7 @@ add "&raw" to the end of the URL within a browser.
         response: ${JSON.stringify(resultString)},
         variables: ${JSON.stringify(variablesString)}
       }),
-      document.body
+      document.getElementById('main')
     );
   </script>
 </body>
